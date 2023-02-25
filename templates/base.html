@@ -1,25 +1,61 @@
 <!doctype html>
 <html lang="pt-BR">
-  <head>
-  
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-   
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
-     {% block 'head'%}  {% endblock %}
-    <title>{% block 'titulo' %} {% endblock %}</title>
-  </head>
-  <body>
+<head>
 
-    <nav class="navbar navbar-dark bg-dark">
-        <a class="navbar-brand" href="{% url 'home' %}">Livraria</a>
-      </nav>
-      
-    {% block 'conteudo' %} {% endblock %}
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
 
-  </body>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+  {% block 'head'%} {% endblock %}
+  <title>{% block 'titulo' %} {% endblock %}</title>
+</head>
+
+<body>
+
+  <nav class="navbar navbar-dark bg-dark">
+    <a class="navbar-brand" href="{% url 'home' %}">Livraria</a>
+    {% if usuario_logado %}
+    <a type="button" class="navbar-brand" data-toggle="modal" data-target="#exampleModalLong">
+      Cadastrar Livro
+    </a>
+    <a class="navbar-brand" href="{% url 'sair' %}">Sair</a>
+    {% endif %}
+  </nav>
+
+  {% block 'conteudo' %} {% endblock %}
+
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+
+  {% if usuario_logado%}
+  <div class="modal fade" id="exampleModalLong" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLongTitle">Cadastrar Livros:</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form action="{% url 'cadastrar_livro'%}" method="POST">{% csrf_token %}
+            <table>
+
+              {{form.as_table}}
+
+            </table>
+            <input class="btn btn-outline-primary" type="submit" value="Cadastrar">
+
+
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+</body>
+
 </html>

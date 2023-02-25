@@ -1,32 +1,76 @@
 {% extends 'base.html' %}
+{% load filtros %}
 
 {% block 'conteudo' %}
 
-<div style="text-align: center;" class="container">
+<div class="container">
+    <br>
+    <form action="#" method="POST">
+     {%csrf_token %}
+     
+        <p>
+        <label>Nome do Livro</label>
+        <input style="width: 60%;" class="form-control" type="text" value="{{livro.nome}}">
+        </p>
+        <p>
+        <label>Autor</label>
+        <input style="width: 60%;" class="form-control" type="text" value="{{livro.autor}}">
+        </p>
+        <p>
+        <label>Co-Autor</label>
+        <input style="width: 60%;"  class="form-control" type="text" value="{{livro.co_autor}}">
+        </p>
+        <label>Data do cadastro</label>
+        <input style="width: 60%;"  class="form-control" type="text" value="{{livro.data_cadastro}}">
+        </p>
+        <h6 style="display: inline;" class="card-subtitle">Categoria:</h6>
+        <select name="categoria">
+            {% for i in categoria_livro %}
+                {% if livro.categoria.nome == i.nome %}
+                <option selected>{{i}}</option>
+                {% else %}
+                <option>{{i}}</option>
+                {% endif %}
+            {% endfor%}
+        </select>
+        <h6 style="display:inline-block;" class="card-subtitle">Emprestado:</h6>
+        {% if livro.emprestado %}
+            <input style="transform: scale(1.2);" checked type="checkbox" name="Emprestado: ">
+        {% else %}
+            <input  style="transform: scale(1.2);" type="checkbox" name="Emprestado: ">
+        {% endif %}
+        <br>
+        <br>
+        <input type="submit" class="btn btn-md btn-outline-primary" value="Salvar">
 
-    <h1>{{livro.nome}}</h1>
-    <h1>{{livro.autor}}</h1>
-    <h1>{{livro.co_autor}}</h1>
-    <h1>{{livro.data_cadastro}}</h1>
-    <h6 style="display: inline;" class="card-subtitle">Emprestado:</h6>
-    {% if livro.emprestado %}
-        <svg style="color: green;" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-journal-check" viewBox="0 0 16 16">
-        <path fill-rule="evenodd" d="M10.854 6.146a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 1 1 .708-.708L7.5 8.793l2.646-2.647a.5.5 0 0 1 .708 0z"/>
-        <path d="M3 0h10a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2v-1h1v1a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H3a1 1 0 0 0-1 1v1H1V2a2 2 0 0 1 2-2z"/>
-        <path d="M1 5v-.5a.5.5 0 0 1 1 0V5h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1H1zm0 3v-.5a.5.5 0 0 1 1 0V8h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1H1zm0 3v-.5a.5.5 0 0 1 1 0v.5h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1H1z"/>
-        </svg>
-    {% else %}
-        <svg style="color: red;" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-journal-x" viewBox="0 0 16 16">
-        <path fill-rule="evenodd" d="M6.146 6.146a.5.5 0 0 1 .708 0L8 7.293l1.146-1.147a.5.5 0 1 1 .708.708L8.707 8l1.147 1.146a.5.5 0 0 1-.708.708L8 8.707 6.854 9.854a.5.5 0 0 1-.708-.708L7.293 8 6.146 6.854a.5.5 0 0 1 0-.708z"/>
-        <path d="M3 0h10a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2v-1h1v1a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H3a1 1 0 0 0-1 1v1H1V2a2 2 0 0 1 2-2z"/>
-        <path d="M1 5v-.5a.5.5 0 0 1 1 0V5h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1H1zm0 3v-.5a.5.5 0 0 1 1 0V8h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1H1zm0 3v-.5a.5.5 0 0 1 1 0v.5h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1H1z"/>
-        </svg>
-     {% endif %}
-     <br>
-     <br>
-     <button>Historico de emprestimo</button>
 
+    </form>
+    <hr>
+    <h2>Historico de Emprestimo</h2>
 
+    <table class="table table-bordered">
+        <thead>
+          <tr>
+            <th scope="col">Nome</th>
+            <th scope="col">Data Emprestimo</th>
+            <th scope="col">Data Devolucão</th>
+            <th scope="col">Tempo de Duracão</th>
+          </tr>
+        </thead>
+        <tbody>
+            {% for i in emprestimos%}
+          <tr>
+            {% if i.nome_emprestado_anonimo == NONE %}
+               <th scope="row">{{i.nome_emprestado}}</th>
+            {% else %}
+               <th scope="row">{{i.nome_emprestado_anonimo}}</th>
+            {% endif %}
+            <td>{{i.data_emprestado}}</td>
+            <td>{{i.data_devolucao}}</td>
+            <td>{{i.data_devolucao|mostra_duracao:i.data_emprestado }} Dias</td>
+          </tr>
+          {% endfor %}
+        </tbody>  
 </div>
 
 
